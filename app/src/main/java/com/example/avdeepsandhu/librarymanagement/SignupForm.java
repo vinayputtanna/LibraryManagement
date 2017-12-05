@@ -1,6 +1,8 @@
 package com.example.avdeepsandhu.librarymanagement;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +41,7 @@ public class SignupForm extends AppCompatActivity{
 
     private TextView signin, signup_btn;
     private EditText emailid, password, re_password, pin;
-    private String url ="";
+    private String url ="http://10.0.0.181:3000";
     final Handler handler = new Handler();
     String verification_code = "";
 
@@ -62,6 +64,7 @@ public class SignupForm extends AppCompatActivity{
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
+        url = url + "/signup";
 
 
         signup_btn.setOnClickListener(new View.OnClickListener() {
@@ -98,7 +101,7 @@ public class SignupForm extends AppCompatActivity{
                     else{
 
                         //ip address of your computer and connect the android phone to same network to use it.
-                        url = "http://10.0.0.181:3000/signup";
+
                         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                                 new Response.Listener<String>() {
                                     @Override
@@ -108,12 +111,26 @@ public class SignupForm extends AppCompatActivity{
                                         try {
                                             JSONObject jObject = new JSONObject(response);
                                             String result = (String) jObject.get("status");
-                                            if(result.equals("success")){
-                                                Toast.makeText(SignupForm.this,"Sign Up Successful",Toast.LENGTH_SHORT).show();
+                                            if(result.equals("emailnotunique")){
+                                                Toast.makeText(SignupForm.this,"Email already taken!",Toast.LENGTH_SHORT).show();
+                                            }
+                                            else if  (result.equals("pinnotunique")){
+                                                Toast.makeText(SignupForm.this,"Pin already taken! Pin has to be unique",Toast.LENGTH_SHORT).show();
+                                            }
+                                            else if (result.equals("success")){
                                                 String email = emailid.getText().toString();
+                                                SharedPreferences sp = getSharedPreferences("session", Context.MODE_PRIVATE);
+                                                SharedPreferences.Editor editor = sp.edit();
+                                                editor.putString("emailid",email );
+                                                editor.commit();
+                                                Toast.makeText(SignupForm.this,"Sign Up Successful",Toast.LENGTH_SHORT).show();
                                                 String fromEmail = "Avdeep2802@gmail.com";
                                                 String fromPassword = "Avneet0705";
                                                 verification_code = VerificationCodeGenerator();
+                                                SharedPreferences sp2 = getSharedPreferences("verification_code", Context.MODE_PRIVATE);
+                                                SharedPreferences.Editor editor2 = sp2.edit();
+                                                editor2.putString("verification_code",verification_code );
+                                                editor2.commit();
                                                 String toEmails = email;
                                                 List toEmailList = Arrays.asList(toEmails
                                                         .split("\\s*,\\s*"));
@@ -127,7 +144,6 @@ public class SignupForm extends AppCompatActivity{
                                                     @Override
                                                     public void run() {
                                                         Intent intent = new Intent(getApplicationContext(),VerifyEmailActivity.class);
-                                                        intent.putExtra("verification_code",verification_code );
                                                         startActivity(intent);
                                                         //Do something after 100ms
                                                     }

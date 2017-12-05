@@ -44,6 +44,7 @@
                     android:layout_height="wrap_content">
 
                     <EditText
+                        android:id="@+id/username"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/user"
@@ -58,6 +59,7 @@
                     android:layout_height="wrap_content">
 
                     <EditText
+                        android:id="@+id/password"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
@@ -78,14 +80,15 @@
 
 
                 <Button
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="22dp"
-                android:background="#d67601"
-                android:text="Sign in"
-                android:textAllCaps="false"
-                android:textColor="#fff"
-                android:textSize="18sp" />
+                    android:id="@+id/signin_btn"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="22dp"
+                    android:background="#d67601"
+                    android:text="Sign in"
+                    android:textAllCaps="false"
+                    android:textColor="#fff"
+                    android:textSize="18sp" />
 
 
             </LinearLayout>

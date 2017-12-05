@@ -3,6 +3,7 @@
     package="com.example.avdeepsandhu.librarymanagement">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature android:name="android.hardware.camera"></uses-feature>
 
     <application
         android:allowBackup="true"
@@ -11,17 +12,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" />
+        <activity android:name=".LoginForm">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginForm" />
         <activity android:name=".SignupForm" />
         <activity android:name=".VerifyEmailActivity" />
-        <activity android:name=".Home_Activity"></activity>
+        <activity android:name=".Home_Activity" />
+        <activity android:name=".AddBookActivity"></activity>
     </application>
 
 </manifest>
