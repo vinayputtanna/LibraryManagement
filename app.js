@@ -8,8 +8,8 @@ var express = require('express')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path');
-var authentication = require('./routes/Authentication'); 
-var searchfile = require('./routes/search');
+var authentication = require('./routes/Authentication');
+var book = require('./routes/Book');
 
 var app = express();
 
@@ -32,7 +32,10 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/users', user.list);
 app.post('/signup',authentication.signup);
-app.post('/search',searchfile.aa);
+app.post('/login', authentication.login);
+app.post('/verified',authentication.verification);
+app.post('/checkifverified', authentication.checkifverified);
+app.post('/addbook',book.addbook);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
