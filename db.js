@@ -1,9 +1,9 @@
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    host     : '127.0.0.1',
+    host     : '35.197.104.4',
     user     : 'root',
-    password : 'root',
-    database : 'LibraryManagement'
+    password : 'sqladmin',
+    database : 'librarydb'
 });
 
 connection.connect(function(err) {
