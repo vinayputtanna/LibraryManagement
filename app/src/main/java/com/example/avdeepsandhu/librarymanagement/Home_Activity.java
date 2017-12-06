@@ -29,7 +29,7 @@ import java.util.Map;
 public class Home_Activity extends AppCompatActivity {
 
 
-    private String url ="http://10.0.0.181:3000";
+    private String url = Config.url;
     public void init()
     {
         final RequestQueue queue = Volley.newRequestQueue(this);
@@ -104,6 +104,7 @@ public class Home_Activity extends AppCompatActivity {
                 editor.commit();
                 Intent intent = new Intent(getApplicationContext(),LoginForm.class);
                 startActivity(intent);
+                return true;
 
 
             case R.id.action_addbook:

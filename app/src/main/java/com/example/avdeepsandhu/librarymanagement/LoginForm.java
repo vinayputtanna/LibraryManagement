@@ -35,7 +35,7 @@ public class LoginForm extends AppCompatActivity {
     EditText username , password;
     Button signin_btn;
     private static final int REQUEST_SIGNUP = 0;
-    private String url ="http://10.0.0.181:3000";
+    private String url = Config.url;
     final Handler handler = new Handler();
 
 

@@ -35,7 +35,7 @@ public class VerifyEmailActivity extends AppCompatActivity {
     Pinview pinview;
     Button submit_btn;
     final Handler handler = new Handler();
-    private String url ="http://10.0.0.181:3000";
+    private String url = Config.url;
 
 
     public void init()

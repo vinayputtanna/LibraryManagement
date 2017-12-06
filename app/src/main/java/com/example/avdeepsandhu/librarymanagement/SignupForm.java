@@ -41,7 +41,7 @@ public class SignupForm extends AppCompatActivity{
 
     private TextView signin, signup_btn;
     private EditText emailid, password, re_password, pin;
-    private String url ="http://10.0.0.181:3000";
+    private String url = Config.url;
     final Handler handler = new Handler();
     String verification_code = "";
 
