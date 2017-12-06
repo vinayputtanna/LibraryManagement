@@ -10,7 +10,7 @@ var express = require('express')
   , path = require('path');
 var authentication = require('./routes/Authentication');
 var book = require('./routes/Book');
-var search = require('./routes/Search');
+var Search = require('./routes/Search');
 
 var app = express();
 
@@ -37,7 +37,10 @@ app.post('/login', authentication.login);
 app.post('/verified',authentication.verification);
 app.post('/checkifverified', authentication.checkifverified);
 app.post('/addbook',book.addbook);
-app.post('/search',search.searchByKeyword);
+
+app.post('/searchbybookname', Search.searchByBookName);
+app.post('/searchbyauthor', Search.searchByAuthor);
+app.post('/searchbykeyword', Search.searchByKeyword);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
