@@ -38,6 +38,8 @@ public class LoginForm extends AppCompatActivity {
     private String url = Config.url;
     final Handler handler = new Handler();
 
+    private static final String IS_LIBRARIAN = "IsLibrarian";
+
 
     public void init()
     {
@@ -70,7 +72,10 @@ public class LoginForm extends AppCompatActivity {
                                         Toast.makeText(LoginForm.this,"Login Successful",Toast.LENGTH_SHORT).show();
                                         SharedPreferences sp = getSharedPreferences("session", Context.MODE_PRIVATE);
                                         SharedPreferences.Editor editor = sp.edit();
-                                        editor.putString("emailid",username.getText().toString() );
+                                        editor.putString("emailid",username.getText().toString());
+                                        if(username.getText().toString().contains("@sjsu.edu")){
+                                            editor.putBoolean(IS_LIBRARIAN, true);
+                                        }
                                         editor.commit();
                                         handler.postDelayed(new Runnable() {
                                             @Override

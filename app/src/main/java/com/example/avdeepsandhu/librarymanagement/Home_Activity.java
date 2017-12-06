@@ -3,7 +3,6 @@ package com.example.avdeepsandhu.librarymanagement;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -28,12 +26,13 @@ import java.util.Map;
 
 public class Home_Activity extends AppCompatActivity {
 
-
+    private SharedPreferences sp;
     private String url = Config.url;
+
     public void init()
     {
         final RequestQueue queue = Volley.newRequestQueue(this);
-        SharedPreferences sp = getSharedPreferences("session", Context.MODE_PRIVATE);
+        sp = getSharedPreferences("session", Context.MODE_PRIVATE);
         final String emailid = sp.getString("emailid",null);
         url = url+"/checkifverified";
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
@@ -89,7 +88,10 @@ public class Home_Activity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.logout, menu);
+        if(sp.getBoolean("IsLibrarian", false))
+            inflater.inflate(R.menu.menu_librarian, menu);
+        else
+            inflater.inflate(R.menu.menu_patron, menu);
         return true;
     }
 
@@ -100,7 +102,7 @@ public class Home_Activity extends AppCompatActivity {
             case R.id.action_logout:
                 SharedPreferences sp = getSharedPreferences("session", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sp.edit();
-                editor.remove("emailid");
+                editor.clear();
                 editor.commit();
                 Intent intent = new Intent(getApplicationContext(),LoginForm.class);
                 startActivity(intent);

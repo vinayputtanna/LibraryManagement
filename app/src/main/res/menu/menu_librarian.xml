@@ -3,21 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.sartainstudios.contacts.AddContact">
 
-
-
     <item
         android:id="@+id/action_logout"
-        android:orderInCategory="100"
+        android:orderInCategory="105"
         android:title="@string/action_logout"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_addbook"
-        android:orderInCategory="100"
+        android:orderInCategory="101"
         android:title="Add Book"
         app:showAsAction="never" />
-
-
-
 
 </menu>
