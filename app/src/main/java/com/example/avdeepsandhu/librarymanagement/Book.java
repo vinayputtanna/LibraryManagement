@@ -17,6 +17,20 @@ public class Book {
     private String mCoverImage;
     private String mDueDate;
 
+    public Book(String mAuthor, String mBookName, String mCallNumber, String mPublisher, String mYearOfPublication, String mLocation, String mNumberOfCopies, String mCurrentStatus, String mKeywords, String mCoverImage, String mDueDate) {
+        this.mAuthor = mAuthor;
+        this.mBookName = mBookName;
+        this.mCallNumber = mCallNumber;
+        this.mPublisher = mPublisher;
+        this.mYearOfPublication = mYearOfPublication;
+        this.mLocation = mLocation;
+        this.mNumberOfCopies = mNumberOfCopies;
+        this.mCurrentStatus = mCurrentStatus;
+        this.mKeywords = mKeywords;
+        this.mCoverImage = mCoverImage;
+        this.mDueDate=mDueDate;
+    }
+
     public String getAuthor() {
         return mAuthor;
     }
