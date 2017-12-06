@@ -25,6 +25,7 @@
         <activity android:name=".VerifyEmailActivity" />
         <activity android:name=".Home_Activity" />
         <activity android:name=".AddBookActivity" />
+        <activity android:name=".EditBookActivity"></activity>
         <activity android:name=".CheckoutsActivity"></activity>
     </application>
 
