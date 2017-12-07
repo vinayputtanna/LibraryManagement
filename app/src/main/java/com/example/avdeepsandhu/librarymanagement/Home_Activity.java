@@ -165,7 +165,7 @@ public class Home_Activity extends AppCompatActivity {
             case R.id.action_logout:
                 SharedPreferences sp = getSharedPreferences("session", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sp.edit();
-                editor.remove("emailid");
+                editor.clear();
                 editor.commit();
                 Intent intent = new Intent(getApplicationContext(),LoginForm.class);
                 startActivity(intent);

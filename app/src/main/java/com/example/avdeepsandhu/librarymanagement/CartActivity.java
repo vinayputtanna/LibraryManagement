@@ -19,6 +19,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public class CartActivity extends AppCompatActivity {
 
     private SharedPreferences mSharedPref;
 
-    private static final String CHECKOUT_BOOKS_API = "/returnBooks";
+    private static final String CHECKOUT_BOOKS_API = "/checkoutBooks";
 
     public void init() {
         queue = Volley.newRequestQueue(this);
@@ -84,5 +85,11 @@ public class CartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cart);
 
         init();
+
+        //Read the book list from previous activity and set the adapter for the listview
+        ArrayList<Book> cartBooks = new ArrayList<>();
+
+        CartBookAdapter cartBookAdapter = new CartBookAdapter(this, cartBooks);
+        mCartListView.setAdapter(cartBookAdapter);
     }
 }
