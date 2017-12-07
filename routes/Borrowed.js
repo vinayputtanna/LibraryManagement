@@ -1,7 +1,7 @@
 var db = require('../db');
 
-exports.getCheckoutBooks = function(req, res){
-    console.log("getCheckoutBooks api");
+exports.getBorrowedBooks = function(req, res){
+    console.log("getBorrowedBooks api");
     var emailid = req.body.emailid;
 
     var sql = "SELECT book_name, author, call_number, publisher, year_of_publication, location, due_date "+

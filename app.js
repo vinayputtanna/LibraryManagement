@@ -11,7 +11,7 @@ var express = require('express')
 var authentication = require('./routes/Authentication');
 var book = require('./routes/Book');
 var search = require('./routes/Search');
-var checkouts=require('./routes/Checkouts');
+var borrowed=require('./routes/Borrowed');
 
 var app = express();
 
@@ -43,7 +43,7 @@ app.post('/searchbybookname', search.searchByBookName);
 app.post('/searchbyauthor', search.searchByAuthor);
 app.post('/searchbykeyword', search.searchByKeyword);
 
-app.post('/getCheckoutBooks', checkouts.getCheckoutBooks);
+app.post('/getBorrowedBooks', borrowed.getBorrowedBooks);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
