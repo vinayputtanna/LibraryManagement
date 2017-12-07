@@ -29,14 +29,14 @@ class GridDetailAdapter extends FragmentPagerAdapter {
 
 
        // ba.putParcelableArrayList("Books",bookarrayList);
-        ba.putString("bookname", bookarrayList.get(position).getTitle());
+        ba.putString("bookname", bookarrayList.get(position).getBookName());
         ba.putString("author", bookarrayList.get(position).getAuthor());
-        ba.putString("callno", bookarrayList.get(position).getCall_number());
+        ba.putString("callno", bookarrayList.get(position).getCallNumber());
         ba.putString("publisher", bookarrayList.get(position).getPublisher());
-        ba.putString("year", bookarrayList.get(position).getYear_of_publication());
-        ba.putString("location", bookarrayList.get(position).getLocation_in_library());
-        ba.putString("copies", bookarrayList.get(position).getNumber_of_copies());
-        ba.putString("status", bookarrayList.get(position).getCurrent_status());
+        ba.putString("year", bookarrayList.get(position).getYearOfPublication());
+        ba.putString("location", bookarrayList.get(position).getLocation());
+        ba.putString("copies", bookarrayList.get(position).getNumberOfCopies());
+        ba.putString("status", bookarrayList.get(position).getCurrentStatus());
         ba.putString("keyword", bookarrayList.get(position).getKeywords());
         fa.setArguments(ba);
         return fa;

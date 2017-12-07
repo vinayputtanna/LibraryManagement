@@ -154,7 +154,7 @@ public class Home_Activity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.logout, menu);
+        inflater.inflate(R.menu.menu_librarian, menu);
         return true;
     }
 
@@ -203,14 +203,14 @@ public class Home_Activity extends AppCompatActivity {
                         JSONObject bookObject = jsonArray.getJSONObject(i);
                         Log.e("RESPONSE : ", bookObject.getString("book_name") +" : " + bookObject.getString("author"));
                         Book bookList_model = new Book();
-                        bookList_model.setTitle(bookObject.getString("book_name"));
+                        bookList_model.setBookName(bookObject.getString("book_name"));
                         bookList_model.setAuthor(bookObject.getString("author"));
-                        bookList_model.setCall_number(bookObject.getString("call_number"));
+                        bookList_model.setCallNumber(bookObject.getString("call_number"));
                         bookList_model.setPublisher(bookObject.getString("publisher"));
-                        bookList_model.setYear_of_publication(bookObject.getString("year_of_publication"));
-                        bookList_model.setLocation_in_library(bookObject.getString("location"));
-                        bookList_model.setNumber_of_copies(bookObject.getString("number_of_copies"));
-                        bookList_model.setCurrent_status(bookObject.getString("current_status"));
+                        bookList_model.setYearOfPublication(bookObject.getString("year_of_publication"));
+                        bookList_model.setLocation(bookObject.getString("location"));
+                        bookList_model.setNumberOfCopies(bookObject.getString("number_of_copies"));
+                        bookList_model.setCurrentStatus(bookObject.getString("current_status"));
                         bookList_model.setKeywords(bookObject.getString("keywords"));
                         BookArrayList.add(bookList_model);
                     }

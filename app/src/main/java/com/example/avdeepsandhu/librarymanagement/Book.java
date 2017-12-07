@@ -17,6 +17,10 @@ public class Book {
     private String mCoverImage;
     private String mDueDate;
 
+    public Book() {
+
+    }
+
     public Book(String mAuthor, String mBookName, String mCallNumber, String mPublisher, String mYearOfPublication, String mLocation, String mNumberOfCopies, String mCurrentStatus, String mKeywords, String mCoverImage, String mDueDate) {
         this.mAuthor = mAuthor;
         this.mBookName = mBookName;

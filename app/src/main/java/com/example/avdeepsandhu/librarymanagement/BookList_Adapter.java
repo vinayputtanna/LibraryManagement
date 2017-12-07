@@ -79,7 +79,7 @@ public class BookList_Adapter extends RecyclerView.Adapter<BookList_Adapter.View
         }
 
         public void bind(final int pos){
-            BookName.setText(bookArrayList.get(pos-1).getTitle());
+            BookName.setText(bookArrayList.get(pos-1).getBookName());
             AuthorName.setText(bookArrayList.get(pos-1).getAuthor());
 //            //DeleteButton.setOnClickListener(new View.OnClickListener() {
 //                @Override

@@ -1,18 +1,13 @@
 package com.example.avdeepsandhu.librarymanagement;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,24 +24,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CheckoutsActivity extends AppCompatActivity {
+public class BorrowedActivity extends AppCompatActivity {
 
     private RequestQueue queue;
 
-    private ListView mCheckoutListView;
+    private ListView mBorrowedListView;
     private Button mReturnBtn;
 
     private SharedPreferences mSharedPref;
 
-    private static final String GET_CHECKOUT_BOOKS_API = "/getCheckoutBooks";
+    private static final String GET_BORROWED_BOOKS_API = "/getBorrowedBooks";
     private static final String RETURN_BOOKS_API = "/returnBooks";
 
 
     public void init() {
         queue = Volley.newRequestQueue(this);
-//        mSharedPref = getSharedPreferences("session", Context.MODE_PRIVATE);
+        mSharedPref = getSharedPreferences("session", Context.MODE_PRIVATE);
 
-        mCheckoutListView = (ListView) findViewById(R.id.checkout_list_view);
+        mBorrowedListView = (ListView) findViewById(R.id.borrowed_list_view);
         mReturnBtn = (Button) findViewById(R.id.return_btn);
 
 
@@ -91,7 +86,7 @@ public class CheckoutsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_checkouts);
+        setContentView(R.layout.activity_borrowed);
 
         init();
 
@@ -99,9 +94,9 @@ public class CheckoutsActivity extends AppCompatActivity {
     }
 
     private void getCheckouts() {
-        final ArrayList<Book> checkoutBooks = new ArrayList<>();
+        final ArrayList<Book> borrowedBooks = new ArrayList<>();
 
-        StringRequest postRequest = new StringRequest(Request.Method.POST, Config.url.concat(GET_CHECKOUT_BOOKS_API),
+        StringRequest postRequest = new StringRequest(Request.Method.POST, Config.url.concat(GET_BORROWED_BOOKS_API),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -116,11 +111,11 @@ public class CheckoutsActivity extends AppCompatActivity {
                                 Book checkoutBook=new Book("", bookObject.getString("book_name"), "",
                                         "", "", "", "", "", "",
                                         "", bookObject.getString("due_date").substring(0, bookObject.getString("due_date").indexOf('T')));
-                                checkoutBooks.add(checkoutBook);
+                                borrowedBooks.add(checkoutBook);
                             }
 
-                            CheckoutBookAdapter checkoutBookAdapter = new CheckoutBookAdapter(CheckoutsActivity.this, checkoutBooks);
-                            mCheckoutListView.setAdapter(checkoutBookAdapter);
+                            BorrowedBookAdapter borrowedBookAdapter = new BorrowedBookAdapter(BorrowedActivity.this, borrowedBooks);
+                            mBorrowedListView.setAdapter(borrowedBookAdapter);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -139,7 +134,7 @@ public class CheckoutsActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("emailid", "vinayppn@gmail.com"); //mSharedPref.getString("emailid", null));
+                params.put("emailid", mSharedPref.getString("emailid", null));
                 return params;
             }
         };
