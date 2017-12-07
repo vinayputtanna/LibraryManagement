@@ -25,8 +25,9 @@
         <activity android:name=".VerifyEmailActivity" />
         <activity android:name=".Home_Activity" />
         <activity android:name=".AddBookActivity" />
-        <activity android:name=".EditBookActivity"></activity>
-        <activity android:name=".CheckoutsActivity"></activity>
+        <activity android:name=".EditBookActivity" />
+        <activity android:name=".BorrowedActivity" />
+        <activity android:name=".CartActivity"></activity>
     </application>
 
 </manifest>
