@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.StrictMode;
@@ -28,6 +29,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -41,6 +43,8 @@ public class AddBookActivity extends AppCompatActivity {
     EditText book_name, author_name, call_number, publisher, year_published, location, number_of_copies, status, keywords;
     Button save_btn;
     private String url = Config.url;
+    ByteArrayOutputStream stream=new ByteArrayOutputStream();
+    Bitmap photo;
 
 
 
@@ -67,6 +71,19 @@ public class AddBookActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String bname = book_name.getText().toString();
+
+                if(photo!= null) {
+                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                }
+                else{
+                    photo= BitmapFactory.decodeResource(getResources(),R.drawable.profile);
+                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                }
+                byte imagearray[]=stream.toByteArray();
+                final String image_string=imagearray.toString();
+
+
+
                 String au_name = author_name.getText().toString();
                 String call_no = call_number.getText().toString();
                 String publish_year = year_published.getText().toString();
@@ -108,7 +125,10 @@ public class AddBookActivity extends AppCompatActivity {
                                             Intent intent = new Intent(getApplicationContext(), Home_Activity.class);
                                             startActivity(intent);
                                         }
-                                        if (result.equals("update")) {
+                                        else if(result.equals("copieserr")){
+                                            Toast.makeText(getApplicationContext(), "current status cannot exceed Number of copies", Toast.LENGTH_SHORT).show();
+                                        }
+                                        else if (result.equals("update")) {
                                             Toast.makeText(getApplicationContext(), "Book successfully added to existing book ", Toast.LENGTH_SHORT).show();
                                             Intent intent = new Intent(getApplicationContext(), Home_Activity.class);
                                             startActivity(intent);
@@ -142,6 +162,7 @@ public class AddBookActivity extends AppCompatActivity {
                             params.put("number_of_copies", String.valueOf(number_of_copies.getText()));
                             params.put("status", String.valueOf(status.getText()));
                             params.put("keywords", String.valueOf(keywords.getText()));
+                            params.put("book_image",image_string);
 
 
                             return params;
@@ -181,7 +202,7 @@ public class AddBookActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAM_REQUEST && resultCode == Activity.RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            photo = (Bitmap) data.getExtras().get("data");
             book_pic.setImageBitmap(photo);
         }
 

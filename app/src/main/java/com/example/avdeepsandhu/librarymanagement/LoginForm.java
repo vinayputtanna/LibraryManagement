@@ -67,10 +67,20 @@ public class LoginForm extends AppCompatActivity {
                                     String result = (String) jObject.get("status");
                                     Log.e("Status", result);
                                     if(result.equals("success")){
+                                        String email= username.getText().toString();
+                                        String[] arr = email.split("@");
+                                        String user = "";
+                                        if(arr[1].startsWith("sjsu")){
+                                            user = "librarian";
+                                        }
+                                        else{
+                                            user = "patron";
+                                        }
                                         Toast.makeText(LoginForm.this,"Login Successful",Toast.LENGTH_SHORT).show();
                                         SharedPreferences sp = getSharedPreferences("session", Context.MODE_PRIVATE);
                                         SharedPreferences.Editor editor = sp.edit();
                                         editor.putString("emailid",username.getText().toString() );
+                                        editor.putString("user",user);
                                         editor.commit();
                                         handler.postDelayed(new Runnable() {
                                             @Override
@@ -80,8 +90,6 @@ public class LoginForm extends AppCompatActivity {
                                                 //Do something after 100ms
                                             }
                                         }, 1000);
-
-
                                     }
                                     else if(result.equals("failure")) {
                                         Toast.makeText(LoginForm.this,"Sign In Failed! Incorrect userid or password",Toast.LENGTH_SHORT).show();
@@ -89,7 +97,6 @@ public class LoginForm extends AppCompatActivity {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-
                             }
                         },
                         new Response.ErrorListener() {

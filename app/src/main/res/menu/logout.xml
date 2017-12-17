@@ -18,6 +18,16 @@
         app:showAsAction="never" />
 
 
+    <item
+        android:id="@+id/action_cart"
+        android:orderInCategory="100"
+        android:title="Cart"
+        app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_borrow"
+        android:orderInCategory="100"
+        android:title="Borrowed Books"
+        app:showAsAction="never" />
 
 </menu>

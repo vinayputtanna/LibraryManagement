@@ -8,6 +8,9 @@ import android.os.Parcelable;
  */
 
 public class Book implements Parcelable {
+
+
+    String bookid;
    String Author;
    String Title;
    String Call_number;
@@ -18,7 +21,30 @@ public class Book implements Parcelable {
    String Current_status;
    String Keywords;
    String Coverage_image;
+   String mDueDate;
+private boolean mChecked = false;
 
+public void setmChecked(boolean mChecked){
+    this.mChecked = mChecked;
+}
+
+    public boolean ismChecked() {
+        return mChecked;
+    }
+
+    public String getDueDate() {
+        return mDueDate;
+    }
+
+    public void setDueDate(String mDueDate) {
+        this.mDueDate = mDueDate;
+    }
+
+    public void setBookid(String bookid) {
+        this.bookid = bookid;
+    }
+
+    public String getBookid() {return bookid;}
 
     public String getAuthor() {
         return Author;

@@ -119,9 +119,19 @@ public class SignupForm extends AppCompatActivity{
                                             }
                                             else if (result.equals("success")){
                                                 String email = emailid.getText().toString();
+
+                                                String[] arr = email.split("@");
+                                                String user = "";
+                                                if(arr[1].startsWith("sjsu")){
+                                                    user = "librarian";
+                                                }
+                                                else{
+                                                    user = "patron";
+                                                }
                                                 SharedPreferences sp = getSharedPreferences("session", Context.MODE_PRIVATE);
                                                 SharedPreferences.Editor editor = sp.edit();
                                                 editor.putString("emailid",email );
+                                                editor.putString("user",user);
                                                 editor.commit();
                                                 Toast.makeText(SignupForm.this,"Sign Up Successful",Toast.LENGTH_SHORT).show();
                                                 String fromEmail = "Avdeep2802@gmail.com";
