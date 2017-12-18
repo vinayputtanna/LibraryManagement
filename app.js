@@ -53,7 +53,7 @@ app.post('/viewcart', cart.viewcart);
 app.post('/deletefromcart', cart.delete_from_cart);
 app.post('/getBorrowedBooks', borrowed.getBorrowedBooks);
 app.post('/returnBooks', borrowed.returnBooks);
-
+app.post('/renewBook', borrowed.renewBook);
 
 app.post('/checkout', checkout.checkout);
 

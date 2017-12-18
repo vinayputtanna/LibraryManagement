@@ -38,6 +38,50 @@ exports.returnBooks = function(req, res){
 			    });		        		
     		}
     res.send({ status: "success"  });
-    
-    
+};
+
+exports.renewBook = function(req, res){
+    console.log("renewBook api");
+    var emailId = req.body.emailId;
+    var bookId = req.body.bookId;
+    var dueDate;
+    var renewedCount=0;
+
+    var waitlistSql = "SELECT patron_emailid, book_id FROM Waitlist WHERE patron_emailid=? AND book_id=?";
+
+    db.query(waitlistSql, [emailId, bookId], function(err, rows, fields){
+        if(err){
+            res.send({ "status": "error" });
+        }
+        else if (rows.length > 0){
+            res.send({ "status": "waitlisted" });
+        }else{
+            var issuedSql="SELECT due_date, renewed_count, DATE(due_date)>=DATE(Now()) AS result FROM Issued WHERE patron_emailid=? AND book_id=?";
+            db.query(issuedSql, [emailId, bookId], function(err, rows, fields) {
+                if (err) {
+                    res.send({"status": "error"});
+                }
+                else if(rows.length>0){
+                    dueDate=rows[0].due_date;
+                    renewedCount=rows[0].renewed_count;
+                    if(rows[0].result===0){
+                        res.send({"status":"overdue"});
+                    }
+                    else if(rows[0].renewed_count>=2) {
+                        res.send({"status": "non-renewable"});
+                    }else{
+                        var updateIssuedSql="UPDATE Issued SET due_date=DATE_ADD(?, INTERVAL 30 DAY), renewed_count=? WHERE patron_emailid=? AND book_id=?";
+                        db.query(updateIssuedSql, [dueDate, renewedCount+1, emailId, bookId], function(err, rows, fields) {
+                            if (err) {
+                                res.send({"status": "error"});
+                            }
+                            else if(rows.affectedRows>0) {
+                                res.send({"status":"renewed"});
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    });
 };
