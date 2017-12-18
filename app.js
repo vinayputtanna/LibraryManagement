@@ -11,6 +11,10 @@ var express = require('express')
 var authentication = require('./routes/Authentication');
 var book = require('./routes/Book');
 var Search = require('./routes/Search');
+var cart = require('./routes/Cart');
+var checkout = require('./routes/Checkout');
+var borrowed=require('./routes/Borrowed');
+
 
 var app = express();
 
@@ -37,10 +41,21 @@ app.post('/login', authentication.login);
 app.post('/verified',authentication.verification);
 app.post('/checkifverified', authentication.checkifverified);
 app.post('/addbook',book.addbook);
+app.post('/deletebook',book.deletebook);
+app.post('/updatebook',book.updatebook);
 
 app.post('/searchbybookname', Search.searchByBookName);
 app.post('/searchbyauthor', Search.searchByAuthor);
 app.post('/searchbykeyword', Search.searchByKeyword);
+
+app.post('/addtocart', cart.addtocart);
+app.post('/viewcart', cart.viewcart);
+app.post('/deletefromcart', cart.delete_from_cart);
+app.post('/getBorrowedBooks', borrowed.getBorrowedBooks);
+app.post('/returnBooks', borrowed.returnBooks);
+
+
+app.post('/checkout', checkout.checkout);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

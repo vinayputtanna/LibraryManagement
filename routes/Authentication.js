@@ -56,7 +56,6 @@ exports.signup = function(req, res){
 
 
 exports.login = function(req, res){
-	console.log('i am here');
 	var emailid = req.body.emailid;
 	var password = req.body.password;	
 	
@@ -65,12 +64,10 @@ exports.login = function(req, res){
 				console.log("error while performing query");
 			}
 		if (rows.length == 0){
-				console.log("i am inside");
 				res.json({ status: 'failure' });
-			}else{	
+			}else{					
 				bcrypt.compare(password, rows[0].password, function(err, resp) {
-					  if(resp == true) {
-						  
+					  if(resp == true) {						 
 						  res.json({ status: 'success' });
 					  }else{
 						  res.json({ status: 'failure' });
@@ -96,7 +93,7 @@ exports.verification = function(req, res){
 
 
 exports.checkifverified = function(req, res){
-
+	console.log("check if verified");
 	var emailid = req.body.emailid;
 	db.query('SELECT * FROM Login_Master WHERE emailid =?',emailid, function(err, rows, fields){
 		if(err){

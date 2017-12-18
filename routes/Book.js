@@ -16,39 +16,47 @@ exports.addbook = function(req, res){
 	var number_of_copies = req.body.number_of_copies;
 	var current_status = req.body.status;
 	var keywords = req.body.keywords;
-	db.query("SELECT * FROM Book_Master Where book_name = ? AND author= ? AND publisher= ? AND year_of_publication= ?", [book_name, author, publisher, year_of_publication], function(err, rows, fields){
-	 	if(err){
-			console.log("error while performing query");
-			res.json({ status: 'failure' });
-		}   
-	    	if (rows.length == 0){
-	    		db.query("insert into Book_Master (book_name, author, call_number, publisher, year_of_publication, location, number_of_copies, current_status, keywords) VALUES (?,?,?,?,?,?,?,?,?)", [book_name, author, call_number, publisher, year_of_publication, location, number_of_copies, current_status, keywords], function(err,result){
-	    			if(err){
-	    				console.log("unable to insert data in book table");
-	    				console.log(err);
-	    				res.json({ status: 'failure' });
-	    				return;
-	    			}else{
-	    				console.log(book_name +" : " + author+" : " + call_number+" : " + publisher+" : " + year_of_publication+" : " + location+" : " + number_of_copies+" : " + current_status+" : " + keywords)
-	    				res.json({ status: 'added' });						
-	    			}				
-	    		});	
-	    	}
-	    	else{
-	    		var no_of_copies= rows[0].number_of_copies;
-	    		var new_copies = +number_of_copies + +no_of_copies;
-	    		
-	    		db.query("UPDATE Book_Master SET number_of_copies = ? Where book_name = ? AND author= ? AND publisher= ? AND year_of_publication= ?", [new_copies, book_name, author, publisher, year_of_publication], function(err,result){
-	    			if(err){
-	    				console.log("error while performing query");
-	    				res.json({ status: 'failure' });
-	    			}   
-	    			else{
-	    				res.json({ status: 'update' });		
-	    			}
-	    		});
-	    	}
-	});
+	var book_image = req.body.book_image;
+	var librarian_emailid = req.body.librarian_emailid;
+	
+	if(current_status > number_of_copies){
+		res.json({ status: 'copieserr' });
+	}
+	else{
+		db.query("SELECT * FROM Book_Master Where book_name = ? AND author= ? AND publisher= ? AND year_of_publication= ?", [book_name, author, publisher, year_of_publication], function(err, rows, fields){
+		 	if(err){
+				console.log("error while performing query");
+				res.json({ status: 'failure' });
+			}   
+		    	if (rows.length == 0){
+		    		db.query("insert into Book_Master (book_name, author, call_number, publisher, year_of_publication, location, number_of_copies, current_status, keywords, book_image, librarian_emailid) VALUES (?,?,?,?,?,?,?,?,?,?,?)", [book_name, author, call_number, publisher, year_of_publication, location, number_of_copies, current_status, keywords, book_image, librarian_emailid], function(err,result){
+		    			if(err){
+		    				console.log("unable to insert data in book table");
+		    				console.log(err);
+		    				res.json({ status: 'failure' });
+		    				return;
+		    			}else{
+		    				console.log(book_name +" : " + author+" : " + call_number+" : " + publisher+" : " + year_of_publication+" : " + location+" : " + number_of_copies+" : " + current_status+" : " + keywords)
+		    				res.json({ status: 'added' });						
+		    			}				
+		    		});	
+		    	}
+		    	else{
+		    		var no_of_copies= rows[0].number_of_copies;
+		    		var new_copies = +number_of_copies + +no_of_copies;
+		    		
+		    		db.query("UPDATE Book_Master SET number_of_copies = ? Where book_name = ? AND author= ? AND publisher= ? AND year_of_publication= ?", [new_copies, book_name, author, publisher, year_of_publication], function(err,result){
+		    			if(err){
+		    				console.log("error while performing query");
+		    				res.json({ status: 'failure' });
+		    			}   
+		    			else{
+		    				res.json({ status: 'update' });		
+		    			}
+		    		});
+		    	}
+		});
+	}
 	
 }
 
@@ -63,27 +71,33 @@ exports.updatebook = function(req, res){
 	var current_status = req.body.status;
 	var keywords = req.body.keywords;
 	var id = req.body.id;
+	var book_image = req.body.book_image;
 	
-	db.query("UPDATE Book_Master SET book_name = ? , author= ? , publisher= ? , year_of_publication= ?, location =?, number_of_copies =? , current_status=? , keywords=? WHERE id= ?", [book_name, author, publisher, year_of_publication, location, number_of_copies, current_status, keywords,id ], function(err,result){
-		if(err){
-			console.log("error while performing query");
-			res.json({ status: 'failure' });
-		}   
-		else{
-			res.json({ status: 'success' });		
-		}
-		
-	});
+	if(current_status > number_of_copies){
+		res.json({ status: 'copieserr' });
+	}
+	else{
+		db.query("UPDATE Book_Master SET book_image= ?, book_name = ? , author= ? , publisher= ? , year_of_publication= ?, location =?, number_of_copies =? , current_status=? , keywords=? WHERE book_id= ?", [book_image, book_name, author, publisher, year_of_publication, location, number_of_copies, current_status, keywords,id ], function(err,result){
+			if(err){
+				console.log("error while performing query");
+				console.log(err);
+				res.json({ status: 'failure' });
+			}   
+			else{
+				res.json({ status: 'success' });		
+			}
+		});
+	}
 }
 
 
 exports.deletebook = function(req, res){
-
+	console.log("delete book Api");
 	var id = req.body.id;
-	db.query("SELECT * FROM Book_Master Where bookid = ?", [id], function(err, rows, fields){
+	db.query("SELECT * FROM Book_Master Where book_id = ?", [id], function(err, rows, fields){
 		
 		if(err){
-			console.log("error while performing query");
+			console.log("error while performing select query");
 			res.json({ status: 'failure' });
 		} 
 		//book not found
@@ -93,10 +107,20 @@ exports.deletebook = function(req, res){
 	    		console.log("There can not be more than 1 book associated to 1 book id");
 	    	}
 	    	else{
+	    		console.log("helllo");
 	    		var no_of_copies= rows[0].number_of_copies;
 	    		var current_status = rows[0].current_status;
 	    		if(no_of_copies == current_status){
-	    			res.json({ status: 'success' });
+	    			db.query("DELETE FROM Book_Master Where book_id = ?", [id], function(err, rows, fields){
+	    				if(err){
+	    					console.log("error while performing delete query");
+	    					res.json({ status: 'failure' });
+	    				} 
+	    				else{
+	    					res.json({ status: 'success' });
+	    				}
+	    			});
+	    			
 	    		}
 	    		else{
 	    			res.json({ status: 'borrowed' });
@@ -106,6 +130,7 @@ exports.deletebook = function(req, res){
 	});
 	
 }
+
 
 
 
