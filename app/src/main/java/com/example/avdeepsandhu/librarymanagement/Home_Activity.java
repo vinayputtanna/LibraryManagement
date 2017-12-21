@@ -218,6 +218,12 @@ public class Home_Activity extends AppCompatActivity {
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
 
+            case R.id.test:
+                Intent intent2 = new Intent(getApplicationContext(), TestActivity.class);
+                startActivity(intent2);
+
+
+
 
             default:
                 return super.onOptionsItemSelected(item);

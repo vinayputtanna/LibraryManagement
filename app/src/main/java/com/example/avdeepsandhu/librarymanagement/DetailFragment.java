@@ -1,7 +1,9 @@
 package com.example.avdeepsandhu.librarymanagement;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +42,7 @@ public class DetailFragment extends Fragment {
     TextView tv;
     Context context;
     String url = Config.url + "/addtocart";
+    String url_for_waitlist = Config.url + "/addtowaitlist";
 
     @SuppressLint("ValidFragment")
     public DetailFragment(Context context){
@@ -96,8 +100,82 @@ public class DetailFragment extends Fragment {
                                     if(result.equals("limit")){
                                         Toast.makeText(context,"Remove an item from cart to add new item! Max 3 items can be added to cart",Toast.LENGTH_SHORT).show();
                                     }
+                                    else if(result.equals("notavail")){
+                                        AlertDialog.Builder alertbox = new AlertDialog.Builder(context);
+                                        alertbox.setMessage("This book is not Available! Do you want to add your self to the waitlist?").setCancelable(false)
+                                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                            StringRequest postRequest = new StringRequest(Request.Method.POST, url_for_waitlist,
+                                                                    new Response.Listener<String>() {
+                                                                        @Override
+                                                                        public void onResponse(String response) {
+                                                                            // response
+                                                                            Log.d("Response", response);
+                                                                            try {
+                                                                                JSONObject jObject = new JSONObject(response);
+                                                                                String result = (String) jObject.get("status");
+                                                                                Log.e("Status", result);
+                                                                                if(result.equals("success")){
+                                                                                    Toast.makeText(context,"Book successfully added to waitlist",Toast.LENGTH_SHORT).show();
+                                                                                }
+                                                                                else if(result.equals("failure")){
+                                                                                    Toast.makeText(context,"Book could not be added to the waitlist",Toast.LENGTH_SHORT).show();
+                                                                                }
+                                                                                else if(result.equals("repeat")){
+                                                                                    Toast.makeText(context,"You are already waitlisted for this book",Toast.LENGTH_SHORT).show();
+                                                                                }
+
+                                                                            } catch (JSONException e) {
+                                                                                e.printStackTrace();
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    new Response.ErrorListener() {
+                                                                        @Override
+                                                                        public void onErrorResponse(VolleyError error) {
+                                                                            // error
+                                                                            Log.d("Error.Response", "Error in response");
+                                                                        }
+                                                                    }
+                                                            ) {
+                                                                @Override
+                                                                protected Map<String, String> getParams() {
+                                                                    Map<String, String> params = new HashMap<String, String>();
+                                                                    params.put("book_id", getArguments().getString("book_id"));
+                                                                    params.put("patron_emailid", getArguments().getString("patron_email_id"));
+
+                                                                    return params;
+                                                                }
+                                                            };
+                                                            queue.add(postRequest);
+                                                    }
+                                                })
+                                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        dialogInterface.cancel();
+                                                    }
+                                                });
+                                        AlertDialog alert = alertbox.create();
+                                        alert.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
+                                        alert.setTitle("WaitList Alert");
+                                        alert.show();
+
+                                    }
+                                    else if(result.equals("success_reserved")){
+
+                                        Toast.makeText(context,"Reserved Book Added to Cart! You can checkout this book within 3 days",Toast.LENGTH_SHORT).show();
+                                    }
+                                    else if(result.equals("failure_reserved")){
+
+                                        Toast.makeText(context,"You have already added your reserved book in cart! Cannot add again!",Toast.LENGTH_SHORT).show();
+                                    }
                                     else if(result.equals("repeat")){
                                         Toast.makeText(context,"Book Already Exists in Cart",Toast.LENGTH_SHORT).show();
+                                    }
+                                    else if(result.equals("issued")){
+                                        Toast.makeText(context,"You have already borrowed this book!",Toast.LENGTH_SHORT).show();
                                     }
                                     else if(result.equals("success")){
                                         Toast.makeText(context,"Successfully Added to Cart",Toast.LENGTH_SHORT).show();

@@ -26,7 +26,9 @@ import com.goodiebag.pinview.Pinview;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -76,6 +78,16 @@ public class VerifyEmailActivity extends AppCompatActivity {
                                         Log.e("Status", result);
                                         if(result.equals("success")){
                                             Toast.makeText(VerifyEmailActivity.this,"Verification Complete",Toast.LENGTH_SHORT).show();
+                                            String fromEmail = Config.fromEmail;
+                                            String fromPassword = Config.fromPassword;
+                                            String toEmails = emailid;
+                                            List toEmailList = Arrays.asList(toEmails
+                                                    .split("\\s*,\\s*"));
+                                            String emailSubject = "Email Verification Complete";
+                                            String emailBody = "Thank You for verifying your Email id. ";
+
+                                            new SendMailTask(VerifyEmailActivity.this).execute(fromEmail,fromPassword, toEmailList, emailSubject, emailBody);
+                                            Log.e("ERROR", "MAIL SENT.");
                                             handler.postDelayed(new Runnable() {
                                                 @Override
                                                 public void run() {

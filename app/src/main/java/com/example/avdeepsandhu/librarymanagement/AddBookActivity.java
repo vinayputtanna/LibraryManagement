@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -26,11 +27,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +48,7 @@ public class AddBookActivity extends AppCompatActivity {
     private String url = Config.url;
     ByteArrayOutputStream stream=new ByteArrayOutputStream();
     Bitmap photo;
+    final Handler handler = new Handler();
 
 
 
@@ -64,7 +68,8 @@ public class AddBookActivity extends AppCompatActivity {
         url = url+"/addbook";
 
 
-
+        SharedPreferences sp = getSharedPreferences("session", Context.MODE_PRIVATE);
+        final String emailid = sp.getString("emailid",null);
 
         final RequestQueue queue = Volley.newRequestQueue(this);
         save_btn.setOnClickListener(new View.OnClickListener() {
@@ -108,6 +113,14 @@ public class AddBookActivity extends AppCompatActivity {
                 {
                     Toast.makeText(getApplicationContext(),"Status field can only contain numbers",Toast.LENGTH_SHORT).show();
                 }
+                else if(copies.equals("0"))
+                {
+                    Toast.makeText(getApplicationContext(),"Number of copies cannot be 0!",Toast.LENGTH_SHORT).show();
+                }
+                else if(!copies.equals(statuss))
+                {
+                    Toast.makeText(getApplicationContext(),"Number of copies has to be equal to status",Toast.LENGTH_SHORT).show();
+                }
                 else {
 
 
@@ -128,11 +141,39 @@ public class AddBookActivity extends AppCompatActivity {
                                         else if(result.equals("copieserr")){
                                             Toast.makeText(getApplicationContext(), "current status cannot exceed Number of copies", Toast.LENGTH_SHORT).show();
                                         }
-                                        else if (result.equals("update")) {
+                                        else if (result.equals("updated")) {
                                             Toast.makeText(getApplicationContext(), "Book successfully added to existing book ", Toast.LENGTH_SHORT).show();
                                             Intent intent = new Intent(getApplicationContext(), Home_Activity.class);
                                             startActivity(intent);
-                                        } else if (result.equals("failure")) {
+                                        }
+                                        else if (result.equals("update_with_array")) {
+                                            Toast.makeText(getApplicationContext(), "Book successfully added to existing book and patrons notified.", Toast.LENGTH_SHORT).show();
+                                            JSONArray arrJson = jObject.getJSONArray("array");
+                                            String[] arr = new String[arrJson.length()];
+                                            List<String> toEmailList = new ArrayList<>();
+                                            for(int i = 0; i < arrJson.length(); i++) {
+                                                arr[i] = arrJson.getString(i);
+                                                toEmailList.add(arr[i]);
+                                            }
+                                            System.out.println(toEmailList);
+                                            String emailSubject = "Book Is Now Available";
+                                            String emailBody = "You can collect the Book from Library. You have been removed from Waitlist and added to Reserved list. Book will be available to you for next 3 days";
+                                            String fromEmail = "Avdeep2802@gmail.com";
+                                            String fromPassword = "Avneet0705";
+                                            new SendMailTask(AddBookActivity.this).execute(fromEmail,fromPassword, toEmailList, emailSubject, emailBody);
+                                            Log.e("ERROR", "MAIL SENT.");
+                                            Log.e("Array", arr[0]);
+
+                                            handler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Intent intent = new Intent(getApplicationContext(), Home_Activity.class);
+                                                    startActivity(intent);
+
+                                                }
+                                            }, 3000);
+                                        }
+                                        else if (result.equals("failure")) {
                                             Toast.makeText(getApplicationContext(), "Book could not be added", Toast.LENGTH_SHORT).show();
                                         }
                                     } catch (JSONException e) {
@@ -163,6 +204,7 @@ public class AddBookActivity extends AppCompatActivity {
                             params.put("status", String.valueOf(status.getText()));
                             params.put("keywords", String.valueOf(keywords.getText()));
                             params.put("book_image",image_string);
+                            params.put("librarian_emailid",emailid);
 
 
                             return params;

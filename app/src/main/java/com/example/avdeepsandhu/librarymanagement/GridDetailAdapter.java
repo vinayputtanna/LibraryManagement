@@ -33,7 +33,7 @@ class GridDetailAdapter extends FragmentPagerAdapter {
         ba.putInt("Position",position);
         ba.putString("patron_email_id",patron_email_id);
 
-
+        ba.putString("book_id", bookarrayList.get(position).getBookid());
 
        // ba.putParcelableArrayList("Books",bookarrayList);
         ba.putString("bookname", bookarrayList.get(position).getTitle());

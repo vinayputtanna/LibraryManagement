@@ -1,6 +1,7 @@
 package com.example.avdeepsandhu.librarymanagement;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -73,7 +74,17 @@ public class CartActivity extends AppCompatActivity {
                                         String emailBody = "You have successfully checked out the book";
                                         String fromEmail = "Avdeep2802@gmail.com";
                                         String fromPassword = "Avneet0705";
+
                                         new SendMailTask(CartActivity.this).execute(fromEmail,fromPassword, toEmailList, emailSubject, emailBody);
+
+                                        handler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Intent intent = new Intent(getApplicationContext(),BorrowedActivity.class);
+                                                startActivity(intent);
+                                                //Do something after 100ms
+                                            }
+                                        }, 3000);
                                     }
                                     else if(result.equals("failure")){
                                         Toast.makeText(getApplicationContext(),"Book Checkout Failure",Toast.LENGTH_SHORT).show();

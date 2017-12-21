@@ -98,7 +98,7 @@ public class BorrowedActivity extends AppCompatActivity {
                                         String toEmails = mSharedPref.getString("emailid", null);
                                         List toEmailList = Arrays.asList(toEmails
                                                 .split("\\s*,\\s*"));
-                                        String emailSubject = "Book Checkout";
+                                        String emailSubject = "Book Return";
                                         String emailBody = "You have successfully returned the book";
                                         String fromEmail = "Avdeep2802@gmail.com";
                                         String fromPassword = "Avneet0705";
@@ -182,7 +182,7 @@ public class BorrowedActivity extends AppCompatActivity {
                                     mBorrowedBooks.add(checkoutBook);
                                 }
 
-                                mBorrowedBookAdapter = new BorrowedBookAdapter(BorrowedActivity.this, mBorrowedBooks);
+                                mBorrowedBookAdapter = new BorrowedBookAdapter(BorrowedActivity.this, mBorrowedBooks, mSharedPref);
                                 mBorrowedListView.setAdapter(mBorrowedBookAdapter);
                             }
                             else{

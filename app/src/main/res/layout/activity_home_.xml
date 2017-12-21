@@ -13,19 +13,18 @@
         android:orientation="horizontal">
         <EditText
             android:id="@+id/searchbook"
-            android:layout_width="230dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_weight="7"
             android:hint="Search for Books" />
-        <Spinner
-            android:layout_width="60dp"
-            android:layout_height="match_parent"
-            ></Spinner>
+
 
         <Button
             android:id="@+id/searchbutton"
             style="@style/Widget.AppCompat.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:textSize="10dp"
             android:text="@android:string/search_go"
             />

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -23,11 +25,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -37,12 +42,15 @@ import static com.example.avdeepsandhu.librarymanagement.AddBookActivity.CAM_REQ
 
 public class EditBookActivity extends AppCompatActivity {
 
-    EditText book_name,author_name,call_number,publisher,year_published, location, number_of_copies ,status, keywords;
+    EditText book_name,author_name,call_number,publisher,year_published, location, number_of_copies , keywords;
+    TextView status;
     Button update_btn;
     private String url = Config.url + "/updatebook";
     ByteArrayOutputStream stream=new ByteArrayOutputStream();
     Bitmap photo;
     ImageButton book_pic;
+    final Handler handler = new Handler();
+
 
     public void init()
     {
@@ -54,7 +62,7 @@ public class EditBookActivity extends AppCompatActivity {
         year_published = (EditText) findViewById(R.id.year_published);
         location = (EditText) findViewById(R.id.location);
         number_of_copies = (EditText) findViewById(R.id.number_of_copies);
-        status = (EditText) findViewById(R.id.status);
+        status = (TextView) findViewById(R.id.status);
         keywords = (EditText) findViewById(R.id.keywords);
         update_btn = (Button) findViewById(R.id.book_update_btn) ;
 
@@ -126,14 +134,31 @@ public class EditBookActivity extends AppCompatActivity {
                                 try {
                                     JSONObject jObject = new JSONObject(response);
                                     String result = (String) jObject.get("status");
-                                    if(result.equals("success")){
+                                    if(result.equals("success_no_wait_list")){
                                         Toast.makeText(getApplicationContext(),"Book Updated Successfully!",Toast.LENGTH_SHORT).show();
                                     }
-                                    else if(result.equals("copieserr")){
-                                        Toast.makeText(getApplicationContext(),"Status Cannot exceed number of copies",Toast.LENGTH_SHORT).show();
-                                    }
+
                                     else if(result.equals("failure")){
                                         Toast.makeText(getApplicationContext(),"Book could not be updated!",Toast.LENGTH_SHORT).show();
+                                    }
+                                    else if (result.equals("update_with_array")) {
+                                        Toast.makeText(getApplicationContext(), "Book successfully updated and patrons notified.", Toast.LENGTH_SHORT).show();
+                                        JSONArray arrJson = jObject.getJSONArray("array");
+                                        String[] arr = new String[arrJson.length()];
+                                        List<String> toEmailList = new ArrayList<>();
+                                        for(int i = 0; i < arrJson.length(); i++) {
+                                            arr[i] = arrJson.getString(i);
+                                            toEmailList.add(arr[i]);
+                                        }
+                                        System.out.println(toEmailList);
+                                        String emailSubject = "Book Is Now Available";
+                                        String emailBody = "You can collect the Book from Library. You have been removed from Waitlist and added to Reserved list. Book will be available to you for next 3 days";
+                                        String fromEmail = "Avdeep2802@gmail.com";
+                                        String fromPassword = "Avneet0705";
+                                        new SendMailTask(EditBookActivity.this).execute(fromEmail,fromPassword, toEmailList, emailSubject, emailBody);
+                                        Log.e("ERROR", "MAIL SENT.");
+                                        Log.e("Array", arr[0]);
+
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
