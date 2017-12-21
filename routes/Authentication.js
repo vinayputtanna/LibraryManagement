@@ -7,6 +7,7 @@ var db = require('../db');
 
 
 exports.signup = function(req, res){
+	console.log("signup route");
 	var emailid = req.body.emailid;
 	var pwd = req.body.password;	
 	var pin = req.body.pin;

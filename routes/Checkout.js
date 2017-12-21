@@ -65,13 +65,33 @@ exports.checkout = function(req,res){
 									console.log("Error in query");																
 								}
 								else{
-									current_status_arr.push(rows[0].current_status);	
-									console.log(current_status_arr);
+									var current_status_temp = rows[0].current_status;	
+									var current_status = +current_status_temp -1;
+									if(current_status <0){
+										current_status = 0;
+									}
+									current_status_arr.push(current_status);									
 								}
-							});
-							
-							
+							});	
 						}
+						setTimeout(function() {
+						    console.log(current_status_arr);
+						    for(var l =0; l<number_of_books_in_cart; l++){
+								var book_id = rows[l].book_id;
+								var current_status = current_status_arr[l];
+								console.log("current status : "+ current_status);
+								db.query("UPDATE Book_Master SET current_status = ? WHERE book_id = ?",[current_status, book_id], function(err, rows, fields){
+									if(err){
+										console.log("error in query");
+									}
+									else{
+										console.log("updated");
+									}
+									
+								});
+							}
+						}, 3000);
+						
 						
 						
 						

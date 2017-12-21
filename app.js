@@ -14,6 +14,8 @@ var Search = require('./routes/Search');
 var cart = require('./routes/Cart');
 var checkout = require('./routes/Checkout');
 var borrowed=require('./routes/Borrowed');
+var waitlist=require('./routes/Waitlist');
+var test = require('./routes/test');
 
 
 var app = express();
@@ -43,6 +45,7 @@ app.post('/checkifverified', authentication.checkifverified);
 app.post('/addbook',book.addbook);
 app.post('/deletebook',book.deletebook);
 app.post('/updatebook',book.updatebook);
+app.post('/addtowaitlist',waitlist.add_to_waitlist);
 
 app.post('/searchbybookname', Search.searchByBookName);
 app.post('/searchbyauthor', Search.searchByAuthor);
@@ -53,6 +56,8 @@ app.post('/viewcart', cart.viewcart);
 app.post('/deletefromcart', cart.delete_from_cart);
 app.post('/getBorrowedBooks', borrowed.getBorrowedBooks);
 app.post('/returnBooks', borrowed.returnBooks);
+app.post('/renewBook', borrowed.renewBook);
+app.post('/test', test.notify_book_available);
 
 
 app.post('/checkout', checkout.checkout);

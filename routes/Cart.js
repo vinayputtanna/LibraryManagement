@@ -14,8 +14,101 @@ exports.addtocart = function(req,res){
 	var current_status = req.body.status;
 	var keywords = req.body.keywords;
 	
-	if(current_status == 0){
-		res.json({ status: 'notavail' });
+	function getBook_id(book_name,author, publisher, year_of_publication )
+	{
+	    return new Promise(function(resolve, reject) {
+	        
+	    	db.query("SELECT * FROM Book_Master Where book_name = ? AND author= ? AND publisher= ? AND year_of_publication= ?", [book_name, author, publisher, year_of_publication], function(err, rows, fields){
+		            // Call reject on error states,
+		            // call resolve with results
+		            if (err) {
+		                return reject(err);
+		            }
+		            book_id = rows[0].book_id;
+		            resolve(rows[0].book_id);
+	    		});
+	    });
+	}
+	
+	function check_if_book_is_there_in_reserved_table(book_id, patron_emailid)
+	{
+	    return new Promise(function(resolve, reject) {
+	        
+	    	db.query("SELECT * FROM Reserved Where book_id = ? AND patron_emailid= ?", [book_id, patron_emailid], function(err, rows, fields){
+		            // Call reject on error states,
+		            // call resolve with results
+		            if (err) {
+		                return reject(err);
+		            }		            
+		            resolve(rows.length);
+	    		});
+	    });
+	}
+	
+	
+	
+	
+	
+	
+	function insert_into_cart(book_id, patron_emailid)
+	{
+	    return new Promise(function(resolve, reject) {
+	        
+	    	db.query("insert into Cart (book_id, patron_emailid) VALUES (?,?)", [book_id, patron_emailid], function(err, rows, fields){
+		            // Call reject on error states,
+		            // call resolve with results
+		            if (err) {
+		                return reject(err);
+		            }		            
+		            resolve("inserted");
+	    		});
+	    });
+	}
+	
+	
+	function check_if_book_is_there_in_cart(book_id)
+	{
+	    return new Promise(function(resolve, reject) {
+	        
+	    	db.query("SELECT * FROM Cart Where book_id = ?", [book_id], function(err, rows, fields){		            
+		            // call resolve with results
+		            if (err) {
+		                return reject(err);
+		            }		            
+		            resolve(rows.length);
+	    		});
+	    });
+	}
+	
+	
+	
+	if(current_status == 0){		
+		getBook_id(book_name,author, publisher, year_of_publication ).then(function(book_id){
+			check_if_book_is_there_in_reserved_table(book_id, patron_emailid).then(function(length) {
+				if(length == 0){
+					res.json({ status: 'notavail' });
+					return;
+				}else if(length >0){
+					check_if_book_is_there_in_cart(book_id).then(function(cart_length){
+						if(cart_length ==0){
+							insert_into_cart(book_id, patron_emailid).then(function(status){
+								if(status == "inserted"){
+									res.json({ status: 'success_reserved'});
+				    					return;
+								}
+								else{
+									res.json({ status: 'failure' });
+				    					return;
+								}
+							});
+						}else if(cart_length>0){
+							res.json({ status: 'failure_reserved' });
+	    						return;
+						}
+					});
+				}			
+			});
+		});		
 	}else if(current_status >0){
 		db.query("SELECT * FROM Book_Master Where book_name = ? AND author= ? AND publisher= ? AND year_of_publication= ?", [book_name, author, publisher, year_of_publication], function(err, rows, fields){
 			if(err){
